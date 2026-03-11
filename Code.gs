@@ -135,6 +135,12 @@ const dynamicFunctionVersion = 'dfv_';
 const dynamicFunctionSource  = 'dfs_';
 var dynamicMenuGenerateDone = false;
 
+Object.keys(BIBLE_DATA_SOURCES).forEach((key) => {
+  if ( Array.isArray(BIBLE_DATA_SOURCES[key].bibleVersions) ) {
+    BIBLE_DATA_SOURCES[key].bibleVersions = ensureRouteBibleVersionList(BIBLE_DATA_SOURCES[key].bibleVersions);
+  };
+});
+
 //////////////////
 // Dynamic menu //
 //////////////////
@@ -752,19 +758,25 @@ function getUrl(bibleData, bibleVersion, bookNum, chapterStart, verseStart, vers
     verseEnd = verseEnd.padStart(targetLength, padString);
   };
 
+  if ( bibleVersion === ROUTE_BIBLE_VERSION ) {
+    let referenceText = buildRouteBibleReference(bookNameFull, chapterStart, verseStart, verseEnd, chapterEnd);
+    return buildRouteBibleUrl(referenceText);
+  };
+
   // Get URL format for replacement
   let url = bibleData.bibleVersions[bibleVersion].urlFormat;
 
   // Replace strings to format final URL
-  url = url
-    .replace(/<<bookNum>>/g, bookNum)
-    .replace(/<<chapterStart>>/g, chapterStart)
-    .replace(/<<verseStart>>/g, verseStart)
-    .replace(/<<verseEnd>>/g, verseEnd)
-    .replace(/<<chapterEnd>>/g, chapterEnd)
-    .replace(/<bookNameAbbr1>>/g, bookNameAbbr1)
-    .replace(/<<bookNameAbbr2>>/g, bookNameAbbr2)
-    .replace(/<<bookNameFull>>/g, bookNameFull);
+  url = applyUrlFormat(url, {
+    bookNum,
+    chapterStart,
+    verseStart,
+    verseEnd,
+    chapterEnd,
+    bookNameAbbr1,
+    bookNameAbbr2,
+    bookNameFull
+  });
 
   // Remove range in URL if single verse scripture only
   if ( chapterStart === chapterEnd && verseStart === verseEnd ) url = url.replace(/-[0-9]+$|-[0-9]+:[0-9]+:[0-9]+$/, '');
@@ -825,7 +837,7 @@ function getBibleData(bibleDataSourceUrl, bibleDataSource) {
         // Return and exit if valid JSON
         try {
 
-          bibleDataJSON = JSON.parse(bibleData.getContentText());
+          bibleDataJSON = withRouteBibleDestination(JSON.parse(bibleData.getContentText()));
 
           return bibleDataJSON;
 
@@ -870,7 +882,7 @@ function getBibleData(bibleDataSourceUrl, bibleDataSource) {
     // Return and exit if valid JSON
     try {
 
-      bibleDataJSON = JSON.parse(bibleData.getContentText());
+      bibleDataJSON = withRouteBibleDestination(JSON.parse(bibleData.getContentText()));
 
       return bibleDataJSON;
     
