@@ -8,7 +8,7 @@ const {
   ensureRouteBibleVersionList
 } = require("../RouteBible.js");
 
-test("Route Bible destination produces the expected URL", () => {
+test("route.bible destination produces the expected URL", () => {
   const reference = buildRouteBibleReference("John", 3, 16, 16, 3);
   const url = buildRouteBibleUrl(reference);
 
@@ -19,7 +19,7 @@ test("Route Bible destination produces the expected URL", () => {
   );
 });
 
-test("Route Bible destination is added to the supported versions list", () => {
+test("route.bible destination is added to the supported versions list", () => {
   assert.deepEqual(
     ensureRouteBibleVersionList(["en_jw_nwt"]),
     ["en_jw_nwt", ROUTE_BIBLE_VERSION]

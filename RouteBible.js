@@ -1,5 +1,5 @@
 const ROUTE_BIBLE_VERSION = "route_bible";
-const ROUTE_BIBLE_DISPLAY_NAME = "Route Bible";
+const ROUTE_BIBLE_DISPLAY_NAME = "route.bible";
 
 function ensureRouteBibleVersionList(bibleVersions) {
   const versions = Array.isArray(bibleVersions) ? bibleVersions.slice() : [];
